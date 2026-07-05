@@ -1,0 +1,328 @@
+:root {
+  --navy: #14213d;
+  --gold: #fca311;
+  --cream: #fff8ec;
+  --white: #ffffff;
+  --ink: #1f2933;
+  --muted: #6b7280;
+  --green: #2f855a;
+  --shadow: 0 12px 30px rgba(20, 33, 61, 0.18);
+  --radius: 22px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, var(--cream), #ffffff);
+  color: var(--ink);
+}
+
+.site-header {
+  background:
+    radial-gradient(circle at top left, rgba(252, 163, 17, 0.28), transparent 32%),
+    linear-gradient(135deg, var(--navy), #243b63);
+  color: var(--white);
+  padding: 1.25rem 1rem 2.5rem;
+  text-align: center;
+  border-bottom-left-radius: 32px;
+  border-bottom-right-radius: 32px;
+}
+
+.logo-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.logo {
+  background: transparent;
+  object-fit: contain;
+}
+
+.mcc-logo {
+  max-width: 360px;
+  max-height: 240px;
+}
+
+.bgc-logo {
+  max-width: 150px;
+  max-height: 80px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  color: var(--gold);
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 8vw, 4.5rem);
+  line-height: 0.95;
+  margin: 0;
+}
+
+.hero-text {
+  max-width: 640px;
+  margin: 1rem auto 0;
+  font-size: 1.1rem;
+  color: #f4f4f5;
+}
+
+main {
+  width: min(1050px, calc(100% - 2rem));
+  margin: -1.5rem auto 2rem;
+}
+
+.auction-status-card,
+.charity-note {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.status-label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.auction-status-card h2 {
+  margin: 0.3rem 0;
+  font-size: 2rem;
+  color: var(--navy);
+}
+
+.auction-status-card p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.action-card {
+  appearance: none;
+  border: 0;
+  background: var(--white);
+  color: var(--ink);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: left;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  min-height: 180px;
+}
+
+.action-card:hover,
+.action-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(20, 33, 61, 0.24);
+  outline: none;
+}
+
+.action-card.primary {
+  background: linear-gradient(135deg, var(--gold), #ffd166);
+}
+
+.icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.card-title {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 850;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+}
+
+.card-copy {
+  color: #4b5563;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.charity-note h2 {
+  margin-top: 0;
+  color: var(--green);
+}
+
+.charity-note p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 1.5rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 850px) {
+  .action-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+  }
+
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-card {
+    min-height: unset;
+  }
+}
+
+.items-section {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.25rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: var(--navy);
+}
+
+#itemSearch {
+  width: min(320px, 100%);
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  font: inherit;
+}
+
+.category-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.category-filter {
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.category-filter.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.item-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  overflow: hidden;
+  background: white;
+}
+
+.item-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #f3f4f6;
+}
+
+.item-card-content {
+  padding: 1rem;
+}
+
+.item-card h3 {
+  margin: 0 0 0.35rem;
+  color: var(--navy);
+}
+
+.item-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.current-bid {
+  font-size: 1.25rem;
+  font-weight: 850;
+  margin-bottom: 0.75rem;
+}
+
+.view-item-button {
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 850;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+@media (max-width: 850px) {
+  .items-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #itemSearch {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .items-grid {
+    grid-template-columns: 1fr;
+  }
+}

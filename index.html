@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moon City Con Charity Auction</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="logo-row">
+      <img src="assets/mcc-logo.svg" alt="Moon City Con Logo" class="logo mcc-logo" />
+      <img src="assets/bgc-logo.png" alt="Boys & Girls Club Logo" class="logo bgc-logo" />
+    </div>
+
+    <div class="hero">
+      <p class="eyebrow">Moon City Con Presents</p>
+      <h1>Charity Silent Auction</h1>
+      <p class="hero-text">
+        Bid on donated items, support the Boys & Girls Club, and help us turn great games into a greater cause.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="auction-status-card">
+      <p class="status-label">Auction Status</p>
+      <h2 id="auctionStatus">Coming Soon</h2>
+      <p id="auctionMessage">
+        Auction items will appear here once bidding opens.
+      </p>
+    </section>
+
+    <section class="action-grid">
+      <button class="action-card primary" id="viewAuctionButton">
+        <span class="icon">🔎</span>
+        <span class="card-title">View Auction Items</span>
+        <span class="card-copy">Browse items and see current high bids.</span>
+      </button>
+
+      <button class="action-card" id="donateItemButton">
+        <span class="icon">🎁</span>
+        <span class="card-title">Donate an Item</span>
+        <span class="card-copy">Submit an item for review before it goes live.</span>
+      </button>
+
+      <button class="action-card" id="myBidsButton">
+        <span class="icon">🏷️</span>
+        <span class="card-title">My Bids</span>
+        <span class="card-copy">Check items you are winning or watching.</span>
+      </button>
+
+      <button class="action-card" id="rulesButton">
+        <span class="icon">📜</span>
+        <span class="card-title">Auction Rules</span>
+        <span class="card-copy">Whole-dollar bids. Minimum $1 raise.</span>
+      </button>
+    </section>
+
+    <section class="items-section" id="itemsSection">
+  <div class="section-header">
+    <h2>Auction Items</h2>
+    <input 
+      type="search" 
+      id="itemSearch" 
+      placeholder="Search auction items..."
+      aria-label="Search auction items"
+    />
+  </div>
+
+  <div class="category-row" id="categoryRow">
+    <button class="category-filter active" data-category="All">All</button>
+    <button class="category-filter" data-category="Games">Games</button>
+    <button class="category-filter" data-category="Accessories">Accessories</button>
+    <button class="category-filter" data-category="Gift Cards">Gift Cards</button>
+    <button class="category-filter" data-category="Other">Other</button>
+  </div>
+
+  <div class="items-grid" id="itemsGrid"></div>
+</section>
+
+    <section class="charity-note">
+      <h2>Supporting Boys & Girls Club</h2>
+      <p>
+        Winning bidders will be contacted when the auction closes. Payments will be processed directly by the Boys & Girls Club team.
+      </p>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="itemModalBackdrop">
+  <div class="item-modal" role="dialog" aria-modal="true" aria-labelledby="modalItemTitle">
+    <button class="modal-close" id="closeItemModal" aria-label="Close item details">&times;</button>
+
+    <img id="modalItemImage" class="modal-item-image" src="" alt="" />
+
+    <div class="modal-content">
+      <p class="modal-category" id="modalItemCategory"></p>
+      <h2 id="modalItemTitle"></h2>
+      <p class="modal-donor" id="modalItemDonor"></p>
+
+      <p class="modal-description" id="modalItemDescription"></p>
+
+      <div class="bid-summary">
+        <div>
+          <span class="bid-label">Current Bid</span>
+          <strong id="modalCurrentBid"></strong>
+        </div>
+        <div>
+          <span class="bid-label">Minimum Bid</span>
+          <strong id="modalMinimumBid"></strong>
+        </div>
+      </div>
+
+      <button class="submit-bid-button" id="openBidButton">
+        Submit Bid
+      </button>
+    </div>
+  </div>
+</div>
+
+  <footer>
+    <p>Moon City Con Charity Auction</p>
+  </footer>
+  <script src="auctionItems.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
