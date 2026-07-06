@@ -88,6 +88,75 @@
     </section>
   </main>
 
+  <div class="modal-backdrop hidden" id="donateModalBackdrop">
+    <div class="item-modal" role="dialog" aria-modal="true" arai-labelledby="donateModalTitle">
+        <button class="modal-close" id="closeDonateModal" aria-label="Close donate item form">&times;</button>
+
+        <div class="modal-content">
+            <p class="modal-category">Donate an Item</p>
+            <h2 id="donateModalTitle">Submit an Auction Item</h2>
+            <p class="modal-donar">
+                Submitted items will be reviewed before they appear in the auction.
+            </p>
+
+            <form id="donateItemForm" class="donate-form">
+                <label>
+                    Donor name
+                    <input type="text" id="donorName" required>
+                </label>
+
+                <label>
+                    Donor Email
+                    <input type="email" id="donorEmail" required>
+                </label>
+
+                <label>
+                    Item Title
+                    <input type="text" id="itemTitle" required>
+                </label>
+
+                <label>
+                    Category
+                    <select id="itemCategory" required>
+                        <option value="">Select category</option>
+                        <option value="Games">Games</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Gift Cards">Gift Cards</option>
+                        <option value="Food">Food</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </label>
+
+                <label>
+                    Description
+                    <textarea id="itemDescription" rows="4" required></textarea>>
+                </label>
+
+                <label>
+                    Estimated Value
+                    <input type="number" id="estimatedValue" min="0" step="1">
+                </label>
+
+                <label>
+                    Suggested Starting Bid
+                    <input type="number" id="suggestedStartingBid" min="0" step="1">
+                </label>
+
+                <label>
+                    Photo URL
+                    <input type="url" id="photoUrl" placeholder="Optional">
+                </label>
+
+                <p class="form-message" id="donateFormMessage"></p>
+
+                <button type="submit" class="submit-bid-button" id="submitDonationButton">
+                    Submit Item for Review
+                </button>                
+            </form>
+        </div>
+    </div>
+  </div>
+
   <div class="modal-backdrop hidden" id="itemModalBackdrop">
   <div class="item-modal" role="dialog" aria-modal="true" aria-labelledby="modalItemTitle">
     <button class="modal-close" id="closeItemModal" aria-label="Close item details">&times;</button>
@@ -122,7 +191,8 @@
   <footer>
     <p>Moon City Con Charity Auction</p>
   </footer>
-  <script src="auctionItems.js"></script>
+  <script src="config.js"></script>
+  <script src="api.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
