@@ -68,24 +68,22 @@ async function submitItem(donation) {
 
 async function submitBidApi(bid) {
   try {
-    const response = await fetch(CONFIG.apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=UTF-8"
-      },
-      body: JSON.stringify({
-        action: "submitBid",
-        ...bid
-      })
+    const params = new URLSearchParams({
+      action: "submitBid",
+      itemId: bid.itemId,
+      bidderName: bid.bidderName,
+      bidderEmail: bid.bidderEmail,
+      bidAmount: bid.bidAmount,
+      notifyIfOutbid: bid.notifyIfOutbid
     });
+
+    const response = await fetch(`${CONFIG.apiUrl}?${params.toString()}`);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
 
-    const data = await response.json();
-
-    return data;
+    return await response.json();
 
   } catch (error) {
     console.error("Unable to submit bid:", error);
