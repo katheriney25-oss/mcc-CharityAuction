@@ -1,5 +1,5 @@
 :root {
-  --navy: #14213d;
+  --navy: #7987a4;
   --gold: #fca311;
   --cream: #fff8ec;
   --white: #ffffff;
@@ -52,8 +52,8 @@ body {
 }
 
 .bgc-logo {
-  max-width: 150px;
-  max-height: 80px;
+  max-width: 300px;
+  max-height: 180px;
 }
 
 .eyebrow {
@@ -646,4 +646,13 @@ footer {
 
 .form-message.success {
   color: #1f7a3f;
+}
+
+.rules-list {
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+
+.rules-list li {
+  margin-bottom: 0.65rem;
 }

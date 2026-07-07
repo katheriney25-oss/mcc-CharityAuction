@@ -102,3 +102,39 @@ async function submitBid(bidData) {
     };
   }
 }
+
+async function fetchMyBids(bidderEmail) {
+
+  try {
+
+    const response = await fetch(CONFIG.apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=UTF-8"
+      },
+      body: JSON.stringify({
+        action: "getMyBids",
+        bidderEmail
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+
+  } catch (error) {
+
+    console.error("Unable to retrieve bids:", error);
+
+    return {
+      success: false,
+      message: "Unable to retrieve bids."
+    };
+
+  }
+
+}

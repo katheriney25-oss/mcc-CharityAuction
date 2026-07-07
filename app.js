@@ -11,6 +11,7 @@ const AUCTION_CONFIG = {
   // closed
   // pickup
 };
+const BIDDER_EMAIL_KEY = "mccAuctionBidderEmail";
 
 document.addEventListener("DOMContentLoaded", () => {
   updateAuctionStatus();
@@ -19,7 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
   wireAuctionFilters();
   wireItemModal();
   wireDonateItemModal();
-  wireBidModal();
+  wireBidModal()
+  wireRulesModal();
+  wireMyBidsModal();
 });
 
 let auctionItems = [];
@@ -77,11 +80,11 @@ function wireLandingPageButtons() {
   });
 
   document.getElementById("myBidsButton").addEventListener("click", () => {
-    alert("My Bids page coming next.");
+    openMyBidsModal();
   });
 
   document.getElementById("rulesButton").addEventListener("click", () => {
-    alert("Auction rules modal coming next.");
+    openRulesModal();
   });
 }
 
@@ -207,6 +210,31 @@ function applyAuctionFilters() {
 
 }
 
+function openRulesModal() {
+  document.getElementById("rulesModalBackdrop").classList.remove("hidden");
+}
+
+function closeRulesModal() {
+  document.getElementById("rulesModalBackdrop").classList.add("hidden");
+}
+
+function wireRulesModal() {
+  document.getElementById("closeRulesModal").addEventListener("click", closeRulesModal);
+
+  document.getElementById("rulesModalBackdrop").addEventListener("click", event => {
+    if (event.target.id === "rulesModalBackdrop") {
+      closeRulesModal();
+    }
+  });
+
+  document.addEventListener("keydown", event => {
+     if (event.key === "Escape") {
+      closeRulesModal();
+    }
+  });
+}
+
+
 let activeItemId = null;
 
 function openItemModal(itemId) {
@@ -224,7 +252,7 @@ function openItemModal(itemId) {
   document.getElementById("modalItemDonor").textContent = `Donated by ${item.donor}`;
   document.getElementById("modalItemDescription").textContent = item.description;
   document.getElementById("modalCurrentBid").textContent = `$${item.currentBid}`;
-  document.getElementById("modalMinimumBid").textContent = `$${item.currentBid + 1}`;
+  document.getElementById("modalMinimumBid").textContent = `$${item.minimumBid}`;
 
   document.getElementById("itemModalBackdrop").classList.remove("hidden");
 }
@@ -388,6 +416,7 @@ async function submitBidForm(event) {
     bidAmount: Number(document.getElementById("bidAmount").value),
     notifyIfOutbid: document.getElementById("notifyIfOutbid").checked
   };
+    localStorage.setItem(BIDDER_EMAIL_KEY, bidData.bidderEmail);
 
   if (!bidData.itemId || !bidData.bidderName || !bidData.bidderEmail || !bidData.bidAmount) {
     message.textContent = "Please complete all required fields.";
@@ -435,4 +464,104 @@ async function submitBidForm(event) {
     message.textContent = "Something went wrong submitting your bid.";
     message.classList.add("error");
   }
+}
+
+//------------------------------------
+// My Bids Modal
+//------------------------------------
+
+function openMyBidsModal() {
+  const savedEmail = localStorage.getItem(BIDDER_EMAIL_KEY) || "";
+
+  document.getElementById("myBidsEmail").value = savedEmail;
+  document.getElementById("myBidsMessage").textContent = "";
+  document.getElementById("myBidsMessage").className = "form-message";
+  document.getElementById("myBidsResults").innerHTML = "";
+
+  document.getElementById("myBidsModalBackdrop").classList.remove("hidden");
+}
+
+function closeMyBidsModal() {
+  document.getElementById("myBidsModalBackdrop").classList.add("hidden");
+}
+
+function wireMyBidsModal() {
+  document.getElementById("closeMyBidsModal").addEventListener("click", closeMyBidsModal);
+
+  document.getElementById("myBidsModalBackdrop").addEventListener("click", event => {
+    if (event.target.id === "myBidsModalBackdrop") {
+      closeMyBidsModal();
+    }
+  });
+
+  document.getElementById("myBidsForm").addEventListener("submit", submitMyBidsLookup);
+}
+
+async function submitMyBidsLookup(event) {
+  event.preventDefault();
+
+  const email = document.getElementById("myBidsEmail").value.trim();
+  const message = document.getElementById("myBidsMessage");
+  const results = document.getElementById("myBidsResults");
+  const button = document.getElementById("myBidsSubmitButton");
+
+  message.textContent = "";
+  message.className = "form-message";
+  results.innerHTML = "";
+
+  if (!email) {
+    message.textContent = "Please enter your email address.";
+    message.classList.add("error");
+    return;
+  }
+
+  localStorage.setItem(BIDDER_EMAIL_KEY, email);
+
+  button.disabled = true;
+  button.textContent = "Checking bids...";
+
+  const response = await fetchMyBids(email);
+
+  button.disabled = false;
+  button.textContent = "View My Bids";
+
+  if (!response.success) {
+    message.textContent = response.message || "Unable to retrieve bids.";
+    message.classList.add("error");
+    return;
+  }
+
+  renderMyBids(response.bids);
+}
+
+function renderMyBids(bids) {
+  const message = document.getElementById("myBidsMessage");
+  const results = document.getElementById("myBidsResults");
+
+  if (!bids.length) {
+    message.textContent = "No bids found for that email address.";
+    return;
+  }
+
+  results.innerHTML = bids.map(bid => {
+    const isWinning = bid.status === "Winning";
+
+    return `
+      <div class="my-bid-card ${isWinning ? "winning" : "outbid"}">
+        <div class="my-bid-status">
+          ${isWinning ? "🟢 Winning" : "🔴 Outbid"}
+        </div>
+
+        <h3>${bid.title}</h3>
+
+        <p>Your bid: <strong>$${bid.myBidAmount}</strong></p>
+
+        ${
+          isWinning
+            ? `<p class="my-bid-note">You are currently the high bidder.</p>`
+            : `<p class="my-bid-note">Current high bid: <strong>$${bid.currentHighBid}</strong></p>`
+        }
+      </div>
+    `;
+  }).join("");
 }

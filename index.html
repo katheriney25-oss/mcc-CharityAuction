@@ -11,7 +11,7 @@
   <header class="site-header">
     <div class="logo-row">
       <img src="assets/mcc-logo.svg" alt="Moon City Con Logo" class="logo mcc-logo" />
-      <img src="assets/bgc-logo.png" alt="Boys & Girls Club Logo" class="logo bgc-logo" />
+      <img src="assets/bgc-logo.webp" alt="Boys & Girls Club Logo" class="logo bgc-logo" />
     </div>
 
     <div class="hero">
@@ -157,6 +157,7 @@
     </div>
   </div>
 
+  
   <!-- Bid Modal -->
 <div id="bidModal" class="modal-backdrop hidden">
   <div class="item-modal bid-modal" role="dialog" aria-modal="true">
@@ -223,6 +224,55 @@
       <button class="submit-bid-button" id="openBidButton">
         Place Bid
       </button>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop hidden" id="rulesModalBackdrop">
+  <div class="item-modal" role="dialog" aria-modal="true" aria-labelledby="rulesModalTitle">
+    <button class="modal-close" id="closeRulesModal" aria-label="Close auction rules">&times;</button>
+
+    <div class="modal-content">
+      <p class="modal-category">Auction Rules</p>
+      <h2 id="rulesModalTitle">How Bidding Works</h2>
+
+      <ul class="rules-list">
+        <li>Bids must be whole-dollar amounts.</li>
+        <li>Each new bid must be at least $1 higher than the current high bid.</li>
+        <li>The highest bid at auction close wins the item.</li>
+        <li>Winning bidders will be contacted after the auction closes.</li>
+        <li>Payments will be processed directly by Boys & Girls Club.</li>
+        <li>Items must be picked up at the convention unless other arrangements are approved.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop hidden" id="myBidsModalBackdrop">
+  <div class="item-modal" role="dialog" aria-modal="true" aria-labelledby="myBidsModalTitle">
+    <button class="modal-close" id="closeMyBidsModal" aria-label="Close my bids">&times;</button>
+
+    <div class="modal-content">
+      <p class="modal-category">My Bids</p>
+      <h2 id="myBidsModalTitle">Check Your Bids</h2>
+
+      <p class="modal-description">
+        Enter the email address you used when placing bids.
+      </p>
+
+      <form id="myBidsForm" class="donate-form">
+        <label>
+          Email Address
+          <input type="email" id="myBidsEmail" required>
+        </label>
+
+        <button type="submit" class="submit-bid-button" id="myBidsSubmitButton">
+          View My Bids
+        </button>
+      </form>
+
+      <p class="form-message" id="myBidsMessage"></p>
+
+      <div id="myBidsResults" class="my-bids-results"></div>
     </div>
   </div>
 </div>
