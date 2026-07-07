@@ -66,23 +66,33 @@ async function submitItem(donation) {
   }
 }
 
-async function submitBidApi(bid) {
-  const params = new URLSearchParams({
-    action: "submitBid",
-    itemId: bid.itemId,
-    bidderName: bid.bidderName,
-    bidderEmail: bid.bidderEmail,
-    bidAmount: bid.bidAmount,
-    notifyIfOutbid: bid.notifyIfOutbid
-  });
+async function submitBid(bidData) {
+  try {
+    const response = await fetch(CONFIG.apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=UTF-8"
+      },
+      body: JSON.stringify({
+        action: "submitBid",
+        ...bidData
+      })
+    });
 
-  await fetch(`${CONFIG.apiUrl}?${params.toString()}`, {
-    method: "GET",
-    mode: "no-cors"
-  });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
 
-  return {
-    success: true,
-    message: "Bid submitted."
-  };
+    const data = await response.json();
+
+    return data;
+
+  } catch (error) {
+    console.error("Unable to submit bid:", error);
+
+    return {
+      success: false,
+      message: "Unable to submit bid. Please try again."
+    };
+  }
 }

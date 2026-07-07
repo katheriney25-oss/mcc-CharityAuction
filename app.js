@@ -375,28 +375,33 @@ async function submitBidForm(event) {
   event.preventDefault();
 
   const message = document.getElementById("bidSubmissionMessage");
+  const submitButton = document.getElementById("submitBidButton");
   message.textContent = "";
   message.className = "form-message";
+  
+ 
 
-  const itemId = document.getElementById("bidItemId").value;
-  const bidderName = document.getElementById("bidderName").value.trim();
-  const bidderEmail = document.getElementById("bidderEmail").value.trim();
-  const bidAmount = Number(document.getElementById("bidAmount").value);
-  const notifyIfOutbid = document.getElementById("notifyIfOutbid").checked;
+  const bidData = {
+    itemId: document.getElementById("bidItemId").value,
+    bidderName: document.getElementById("bidderName").value.trim(),
+    bidderEmail: document.getElementById("bidderEmail").value.trim(),
+    bidAmount: Number(document.getElementById("bidAmount").value),
+    notifyIfOutbid: document.getElementById("notifyIfOutbid").checked
+  };
 
-  if (!itemId || !bidderName || !bidderEmail || !bidAmount) {
+  if (!bidData.itemId || !bidData.bidderName || !bidData.bidderEmail || !bidData.bidAmount) {
     message.textContent = "Please complete all required fields.";
     message.classList.add("error");
     return;
   }
 
-  if (!Number.isInteger(bidAmount)) {
+  if (!Number.isInteger(bidData.bidAmount)) {
     message.textContent = "Bids must be whole dollars.";
     message.classList.add("error");
     return;
   }
 
-  if (activeBidItem && bidAmount < activeBidItem.minimumBid) {
+  if (activeBidItem && bidData.bidAmount < activeBidItem.minimumBid) {
     message.textContent = `Bid must be at least $${activeBidItem.minimumBid}.`;
     message.classList.add("error");
     return;
@@ -405,13 +410,9 @@ async function submitBidForm(event) {
   try {
     message.textContent = "Submitting bid...";
 
-    const result = await submitBidApi({
-      itemId,
-      bidderName,
-      bidderEmail,
-      bidAmount,
-      notifyIfOutbid
-    });
+    const result = await submitBid(bidData);
+
+    
 
     if (!result.success) {
       message.textContent = result.message || "Bid could not be submitted.";
@@ -419,7 +420,8 @@ async function submitBidForm(event) {
       return;
     }
 
-    message.textContent = "Bid accepted!";
+
+    message.textContent = "Bid accepted - Good Luck!";
     message.classList.add("success");
 
     await initializeAuction();
