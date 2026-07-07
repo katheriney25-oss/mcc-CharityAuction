@@ -9,9 +9,15 @@ async function fetchAuctionItems() {
 
     try {
 
-        const response = await fetch(
-            `${CONFIG.apiUrl}?action=getItems`
-        );
+        const response = await fetch(CONFIG.apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=UTF-8"
+          },
+          body: JSON.stringify({
+            action: "getItems"
+          })
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
