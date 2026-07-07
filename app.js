@@ -19,9 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
   wireAuctionFilters();
   wireItemModal();
   wireDonateItemModal();
+  wireBidModal();
 });
 
-let auctionsItems = [];
+let auctionItems = [];
 
 
 //------------------------------------
@@ -89,31 +90,65 @@ let activeCategory = "All";
 function renderAuctionItems(items) {
   const itemsGrid = document.getElementById("itemsGrid");
 
+  if (!itemsGrid) return;
+
   itemsGrid.innerHTML = "";
+
+  if (!items.length) {
+    itemsGrid.innerHTML = `
+      <div class="empty-auction-message">
+        No auction items are currently available.
+      </div>
+    `;
+    return;
+  }
 
   items.forEach(item => {
     const imageHtml = item.image
-        ? `<img src="${item.image}" alt="${item.title}">`
-        : `
-      <div class="item-image-placeholder">
-        <img src="assets/mcc-logo.svg" alt="" class="placeholder-detective">
-        <div class="placeholder-text">Pics Unavailable</div>
-      </div>            
-        `;
+      ? `<img src="${item.image}" alt="${item.title}" class="item-card-image">`
+      : `
+        <div class="item-image-placeholder">
+          <img src="assets/mcc-logo.svg" alt="" class="placeholder-detective">
+          <div class="placeholder-text">Pics Unavailable</div>
+        </div>
+      `;
 
-    const minimumBid = item.currentBid + 1;
     const card = document.createElement("article");
     card.className = "item-card";
 
     card.innerHTML = `
-      ${imageHtml}
+      <div class="item-image-wrap">
+        ${imageHtml}
+      </div>
+
       <div class="item-card-content">
+        <div class="item-category">${item.category}</div>
+
         <h3>${item.title}</h3>
-        <div class="item-meta">${item.category} · Donated by ${item.donor}</div>
-        <div class="current-bid">Current Bid: $${item.currentBid}</div>
-        <button class="view-item-button" data-item-id="${item.itemId}">
-          View Item
-        </button>
+
+        <p class="item-description">
+          ${item.description}
+        </p>
+
+        <div class="item-bid-summary">
+          <div>
+            <span class="item-label">Current High Bid</span>
+            <strong>$${item.currentBid}</strong>
+          </div>
+
+          <div>
+            <span class="item-label">Minimum Next Bid</span>
+            <strong>$${item.minimumBid}</strong>
+          </div>
+        </div>
+
+        <div class="item-footer">
+          <span>${item.bidCount || 0} bid${Number(item.bidCount) === 1 ? "" : "s"}</span>
+
+          <button class="view-item-button" data-item-id="${item.itemId}">
+            View Item
+          </button>
+        </div>
       </div>
     `;
 
@@ -122,8 +157,7 @@ function renderAuctionItems(items) {
 
   document.querySelectorAll(".view-item-button").forEach(button => {
     button.addEventListener("click", () => {
-      const itemId = button.dataset.itemId;
-      openItemModal(itemId);
+      openItemModal(button.dataset.itemId);
     });
   });
 }
@@ -148,7 +182,7 @@ function wireAuctionFilters(items) {
 function applyAuctionFilters() {
   const searchTerm = document.getElementById("itemSearch").value.toLowerCase();
 
-  const filteredItems = items.filter(item => {
+  const filteredItems = auctionItems.filter(item => {
     const matchesCategory =
       activeCategory === "All" || item.category === activeCategory;
 
@@ -177,11 +211,11 @@ let activeItemId = null;
 
 function openItemModal(itemId) {
   const item = 
-  AUCTION_ITEMS.find(item => item.itemId === itemId);
+  auctionItems.find(item => item.itemId === itemId);
 
   if (!item) return;
 
-  activeItemId = item.id;
+  activeItemId = item.itemId;
 
   document.getElementById("modalItemImage").src = item.image;
   document.getElementById("modalItemImage").alt = item.title;
@@ -216,8 +250,25 @@ function wireItemModal() {
   });
 
   document.getElementById("openBidButton").addEventListener("click", () => {
-    alert("Bid form coming next.");
+    const itemId = activeItemId;
+    closeItemModal();
+    openBidModal(itemId);
   });
+}
+
+function wireBidModal() {
+
+    document.getElementById("bidModal").addEventListener("click", event => {
+        if (event.target.id === "bidModal") {
+            closeBidModal();
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            closeBidModal();
+        }
+    });
 }
 
 //------------------------------------
@@ -285,4 +336,101 @@ async function submitDonation(event) {
   setTimeout(() => {
     closeDonateItemModal();
   }, 1400);
+}
+
+let activeBidItem = null;
+
+function openBidModal(itemId) {
+  const item = auctionItems.find(item => item.itemId === itemId);
+
+  if (!item) return;
+
+  activeBidItem = item;
+
+  document.getElementById("bidItemId").value = item.itemId;
+  document.getElementById("bidItemTitle").textContent = item.title;
+
+  document.getElementById("bidItemCurrentBid").textContent =
+    `Current high bid: $${item.currentBid}`;
+
+  document.getElementById("bidItemMinimumBid").textContent =
+    `Minimum next bid: $${item.minimumBid}`;
+
+  document.getElementById("bidAmount").value = item.minimumBid;
+  document.getElementById("bidAmount").min = item.minimumBid;
+
+  document.getElementById("bidSubmissionMessage").textContent = "";
+  document.getElementById("bidSubmissionMessage").className = "form-message";
+
+  document.getElementById("bidModal").classList.remove("hidden");
+}
+
+function closeBidModal() {
+  document.getElementById("bidModal").classList.add("hidden");
+  document.getElementById("bidForm").reset();
+  activeBidItem = null;
+}
+
+async function submitBidForm(event) {
+  event.preventDefault();
+
+  const message = document.getElementById("bidSubmissionMessage");
+  message.textContent = "";
+  message.className = "form-message";
+
+  const itemId = document.getElementById("bidItemId").value;
+  const bidderName = document.getElementById("bidderName").value.trim();
+  const bidderEmail = document.getElementById("bidderEmail").value.trim();
+  const bidAmount = Number(document.getElementById("bidAmount").value);
+  const notifyIfOutbid = document.getElementById("notifyIfOutbid").checked;
+
+  if (!itemId || !bidderName || !bidderEmail || !bidAmount) {
+    message.textContent = "Please complete all required fields.";
+    message.classList.add("error");
+    return;
+  }
+
+  if (!Number.isInteger(bidAmount)) {
+    message.textContent = "Bids must be whole dollars.";
+    message.classList.add("error");
+    return;
+  }
+
+  if (activeBidItem && bidAmount < activeBidItem.minimumBid) {
+    message.textContent = `Bid must be at least $${activeBidItem.minimumBid}.`;
+    message.classList.add("error");
+    return;
+  }
+
+  try {
+    message.textContent = "Submitting bid...";
+
+    const result = await submitBidApi({
+      itemId,
+      bidderName,
+      bidderEmail,
+      bidAmount,
+      notifyIfOutbid
+    });
+
+    if (!result.success) {
+      message.textContent = result.message || "Bid could not be submitted.";
+      message.classList.add("error");
+      return;
+    }
+
+    message.textContent = "Bid accepted!";
+    message.classList.add("success");
+
+    await initializeAuction();
+
+    setTimeout(() => {
+      closeBidModal();
+    }, 900);
+
+  } catch (error) {
+    console.error(error);
+    message.textContent = "Something went wrong submitting your bid.";
+    message.classList.add("error");
+  }
 }

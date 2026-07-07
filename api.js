@@ -62,3 +62,10 @@ async function submitItem(donation) {
     };
   }
 }
+
+async function submitBidApi(bidData) {
+  return postToAuctionApi({
+    action: "submitBid",
+    ...bidData
+  });
+}

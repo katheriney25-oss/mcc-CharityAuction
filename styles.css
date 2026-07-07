@@ -256,15 +256,39 @@ footer {
 
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
 }
 
 .item-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
+  background: #fffaf0;
+  border: 2px solid #4b2e1f;
+  border-radius: 16px;
   overflow: hidden;
-  background: white;
+  box-shadow: 0 4px 0 rgba(75, 46, 31, 0.25);
+}
+
+.item-category {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+}
+
+.item-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.item-image-wrap {
+  height: 180px;
+  background: #efe2c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .item-card img {
@@ -274,13 +298,45 @@ footer {
   background: #f3f4f6;
 }
 
+.item-description {
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
 .item-card-content {
   padding: 1rem;
 }
 
 .item-card h3 {
-  margin: 0 0 0.35rem;
-  color: var(--navy);
+  margin: 0.35rem 0;
+}
+
+.item-bid-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.item-bid-summary div {
+  background: #f4ead7;
+  border-radius: 10px;
+  padding: 0.65rem;
+}
+
+.item-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .item-meta {
@@ -296,14 +352,19 @@ footer {
 }
 
 .view-item-button {
-  width: 100%;
-  border: 0;
+  border: none;
   border-radius: 999px;
-  background: var(--gold);
-  color: var(--navy);
-  font-weight: 850;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.9rem;
+  font-weight: 700;
   cursor: pointer;
+}
+
+.empty-auction-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  background: #fffaf0;
+  border-radius: 16px;
 }
 
 @media (max-width: 850px) {
@@ -455,29 +516,18 @@ footer {
 }
 
 .item-image-placeholder {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  background: #fff8ec;
-  border-bottom: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
+  text-align: center;
   padding: 1rem;
 }
 
 .placeholder-detective {
-  width: 95px;
-  max-height: 120px;
-  object-fit: contain;
+  max-width: 80px;
+  opacity: 0.75;
 }
 
 .placeholder-text {
-  color: var(--navy);
-  font-weight: 900;
-  font-size: 1.15rem;
-  text-align: center;
-  letter-spacing: 0.04em;
+  margin-top: 0.5rem;
+  font-weight: 700;
 }
 
 .donate-form {
@@ -520,4 +570,80 @@ footer {
 
 .form-message.success {
   color: var(--green);
+}
+
+.bid-modal {
+  max-width: 520px;
+  width: min(92vw, 520px);
+  padding: 1.5rem;
+}
+
+.bid-modal h2 {
+  margin: 0 0 1rem;
+}
+
+.bid-modal-content {
+  max-width: 460px;
+}
+
+.bid-item-summary {
+  background: #f4ead7;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.bid-item-summary h3 {
+  margin: 0 0 0.75rem;
+}
+
+#bidForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+#bidForm label {
+  font-weight: 700;
+}
+
+#bidForm input[type="text"],
+#bidForm input[type="email"],
+#bidForm input[type="number"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid #c7b99f;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400 !important;
+}
+
+#bidForm .submit-bid-button {
+  margin-top: 0.75rem;
+  width: 100%;
+  border-radius: 999px;
+  padding: 0.85rem 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+
+.form-message {
+  min-height: 1.25rem;
+  font-weight: 600;
+}
+
+.form-message.error {
+  color: #9b1c1c;
+}
+
+.form-message.success {
+  color: #1f7a3f;
 }

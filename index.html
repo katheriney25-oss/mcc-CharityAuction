@@ -89,7 +89,7 @@
   </main>
 
   <div class="modal-backdrop hidden" id="donateModalBackdrop">
-    <div class="item-modal" role="dialog" aria-modal="true" arai-labelledby="donateModalTitle">
+    <div class="item-modal" role="dialog" aria-modal="true" aria-labelledby="donateModalTitle">
         <button class="modal-close" id="closeDonateModal" aria-label="Close donate item form">&times;</button>
 
         <div class="modal-content">
@@ -129,7 +129,7 @@
 
                 <label>
                     Description
-                    <textarea id="itemDescription" rows="4" required></textarea>>
+                    <textarea id="itemDescription" rows="4" required></textarea>
                 </label>
 
                 <label>
@@ -157,6 +157,45 @@
     </div>
   </div>
 
+  <!-- Bid Modal -->
+<div id="bidModal" class="modal-backdrop hidden">
+  <div class="item-modal bid-modal" role="dialog" aria-modal="true">
+    <button class="modal-close" onclick="closeBidModal()">×</button>
+
+    <h2>Place a Bid</h2>
+
+    <div class="bid-item-summary">
+      <h3 id="bidItemTitle"></h3>
+      <p id="bidItemCurrentBid"></p>
+      <p id="bidItemMinimumBid"></p>
+    </div>
+
+    <form id="bidForm" onsubmit="submitBidForm(event)">
+      <input type="hidden" id="bidItemId">
+
+      <label for="bidderName">Your Name *</label>
+      <input type="text" id="bidderName" required>
+
+      <label for="bidderEmail">Your Email *</label>
+      <input type="email" id="bidderEmail" required>
+
+      <label for="bidAmount">Bid Amount *</label>
+      <input type="number" id="bidAmount" min="1" step="1" required>
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="notifyIfOutbid" checked>
+        Email me if I’m outbid
+      </label>
+
+      <p id="bidSubmissionMessage" class="form-message"></p>
+
+      <button type="submit" class="primary-button">
+        Submit Bid
+      </button>
+    </form>
+  </div>
+</div>
+
   <div class="modal-backdrop hidden" id="itemModalBackdrop">
   <div class="item-modal" role="dialog" aria-modal="true" aria-labelledby="modalItemTitle">
     <button class="modal-close" id="closeItemModal" aria-label="Close item details">&times;</button>
@@ -182,7 +221,7 @@
       </div>
 
       <button class="submit-bid-button" id="openBidButton">
-        Submit Bid
+        Place Bid
       </button>
     </div>
   </div>
