@@ -70,8 +70,9 @@ async function submitBidApi(bid) {
   try {
     const response = await fetch(CONFIG.apiUrl, {
       method: "POST",
+      redirect: "follow",
       headers: {
-        "Content-Type": "text/plain;charset=UTF-8"
+        "Content-Type": "text/plain;charset=utf-8"
       },
       body: JSON.stringify({
         action: "submitBid",
@@ -83,9 +84,7 @@ async function submitBidApi(bid) {
       throw new Error(`HTTP ${response.status}`);
     }
 
-    const data = await response.json();
-
-    return data;
+    return await response.json();
 
   } catch (error) {
     console.error("Unable to submit bid:", error);
