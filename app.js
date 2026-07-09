@@ -61,7 +61,7 @@ function updateAuctionStatus() {
 
     default:
       auctionStatus.textContent = "Coming Soon";
-      auctionMessage.textContent = "Feel free to browse items, and plan your bids! Bidding will open soon!";
+      auctionMessage.textContent = "Feel free to submit donations as well as browse available items to plan your bids! Bidding will open soon!";
       break;
   }
 }
