@@ -112,6 +112,19 @@ function renderAuctionItems(items) {
     const imageHtml = getImageHtml(item);
 
     const card = document.createElement("article");
+    const hasBid = Number(item.bidCount) > 0;
+    const bidLabel = hasBid
+      ? "Current High Bid"
+      : "Recommended Starting Bid";
+    
+    const displayBid = hasBid
+      ? Number(item.currentBid)
+      : Number(item.startingBid);
+
+    const minimumBid = hasBid
+      ? Number(item.currentBid) + 1
+      : 1;
+
     card.className = "item-card";
 
     card.innerHTML = `
@@ -130,13 +143,13 @@ function renderAuctionItems(items) {
 
         <div class="item-bid-summary">
           <div>
-            <span class="item-label">Current High Bid</span>
-            <strong>$${item.currentBid}</strong>
+            <span class="item-label">${bidLabel}</span>
+            <strong>$${displayBid}</strong>
           </div>
 
           <div>
             <span class="item-label">Minimum Next Bid</span>
-            <strong>$${item.minimumBid}</strong>
+            <strong>$${minimumBid}</strong>
           </div>
         </div>
 
