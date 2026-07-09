@@ -3,7 +3,7 @@
 //------------------------------------
 
 const AUCTION_CONFIG = {
-  status: "open", 
+  status: "coming-soon", 
   // options later:
   // coming-soon
   // open
