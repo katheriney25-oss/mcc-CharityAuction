@@ -3,7 +3,7 @@
 //------------------------------------
 
 const AUCTION_CONFIG = {
-  status: "coming-soon", 
+  status: "open", 
   // options later:
   // coming-soon
   // open
@@ -61,19 +61,21 @@ function updateAuctionStatus() {
 
     default:
       auctionStatus.textContent = "Coming Soon";
-      auctionMessage.textContent = "Auction items will appear here once bidding opens.";
+      auctionMessage.textContent = "Feel free to browse items, and plan your bids! Bidding will open soon!";
       break;
   }
 }
-
+function biddingIsOpen() {
+  return (
+    AUCTION_CONFIG.status === "open" ||
+    AUCTION_CONFIG.status === "closing-soon"
+  );
+}
 //------------------------------------
 // Buttons
 //------------------------------------
 
 function wireLandingPageButtons() {
-  document.getElementById("viewAuctionButton").addEventListener("click", () => {
-    alert("Auction item list coming next.");
-  });
 
   document.getElementById("donateItemButton").addEventListener("click", () => {
     openDonateItemModal();
@@ -107,14 +109,7 @@ function renderAuctionItems(items) {
   }
 
   items.forEach(item => {
-    const imageHtml = item.image
-      ? `<img src="${item.image}" alt="${item.title}" class="item-card-image">`
-      : `
-        <div class="item-image-placeholder">
-          <img src="assets/mcc-logo.svg" alt="" class="placeholder-detective">
-          <div class="placeholder-text">Pics Unavailable</div>
-        </div>
-      `;
+    const imageHtml = getImageHtml(item);
 
     const card = document.createElement("article");
     card.className = "item-card";
@@ -164,6 +159,52 @@ function renderAuctionItems(items) {
     });
   });
 }
+
+function getImagePlaceholderHtml(text = "Image Unavailable") {
+  return `
+    <div class="item-image-placeholder">
+      <img src="assets/mcc-logo.svg" alt="" class="placeholder-detective">
+      <div class="placeholder-text">${text}</div>
+    </div>
+  `;
+}
+
+function getImageHtml(item) {
+  if (!item.image) {
+    return getImagePlaceholderHtml("Pics Unavailable");
+  }
+
+  return `
+    <img
+      src="${item.image}"
+      alt="${item.title}"
+      class="item-card-image"
+      onerror="this.onerror=null; this.parentElement.innerHTML = getImagePlaceholderHtml();"
+    >
+  `;
+}
+
+function setModalImage(item) {
+  const modalImage = document.getElementById("modalItemImage");
+
+  modalImage.onerror = null;
+
+  if (!item.image) {
+    modalImage.src = "assets/mcc-logo.svg";
+    modalImage.alt = "Image unavailable";
+    return;
+  }
+
+  modalImage.src = item.image;
+  modalImage.alt = item.title;
+
+  modalImage.onerror = () => {
+    modalImage.onerror = null;
+    modalImage.src = "assets/mcc-logo.svg";
+    modalImage.alt = "Image unavailable";
+  };
+}
+
 
 function wireAuctionFilters(items) {
   const searchInput = document.getElementById("itemSearch");
@@ -245,14 +286,25 @@ function openItemModal(itemId) {
 
   activeItemId = item.itemId;
 
-  document.getElementById("modalItemImage").src = item.image;
-  document.getElementById("modalItemImage").alt = item.title;
+  setModalImage(item);
   document.getElementById("modalItemCategory").textContent = item.category;
   document.getElementById("modalItemTitle").textContent = item.title;
   document.getElementById("modalItemDonor").textContent = `Donated by ${item.donor}`;
   document.getElementById("modalItemDescription").textContent = item.description;
   document.getElementById("modalCurrentBid").textContent = `$${item.currentBid}`;
   document.getElementById("modalMinimumBid").textContent = `$${item.minimumBid}`;
+
+  const bidButton = document.getElementById("openBidButton");
+  if (biddingIsOpen()) {
+    bidButton.disabled = false;
+    bidButton.textContent = "Place a Bid";
+  } else {
+    bidButton.disabled = true;
+    bidButton.textContent = 
+      AUCTION_CONFIG.status === "closed"
+      ? "Auction Closed"
+      : "Bidding Closed";
+  }
 
   document.getElementById("itemModalBackdrop").classList.remove("hidden");
 }
