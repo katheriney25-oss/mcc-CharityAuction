@@ -182,34 +182,113 @@ function getImagePlaceholderHtml(text = "Image Unavailable") {
   `;
 }
 
+function getDisplayImageUrl(url) {
+  if (!url) return "";
+
+  const trimmedUrl = String(url).trim();
+
+  // Standard Google Drive sharing URL:
+  // https://drive.google.com/file/d/FILE_ID/view
+  const filePathMatch = trimmedUrl.match(
+    /drive\.google\.com\/file\/d\/([^/?#]+)/
+  );
+
+  if (filePathMatch) {
+    const fileId = filePathMatch[1];
+
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`;
+  }
+
+  // Alternate Google Drive links:
+  // https://drive.google.com/open?id=FILE_ID
+  // https://drive.google.com/uc?id=FILE_ID
+  try {
+    const parsedUrl = new URL(trimmedUrl);
+
+    if (parsedUrl.hostname.includes("drive.google.com")) {
+      const fileId = parsedUrl.searchParams.get("id");
+
+      if (fileId) {
+        return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`;
+      }
+    }
+  } catch (error) {
+    console.warn("Invalid image URL:", trimmedUrl);
+    return "";
+  }
+
+  // A normal non-Drive image URL does not need conversion.
+  return trimmedUrl;
+}
+
+/*
+  Finds the image URL on an auction item and returns
+  the final display-ready version.
+
+  Any card, modal, or future image display should call
+  this function rather than reading item.image directly.
+*/
+function getItemImageUrl(item) {
+  if (!item) return "";
+
+  const originalUrl =
+    item.image ||
+    item.photoUrl ||
+    item.imageUrl ||
+    item.PhotoUrl ||
+    item.ImageUrl ||
+    "";
+
+  return getDisplayImageUrl(originalUrl);
+}
+
+
+
 function getImageHtml(item) {
-  if (!item.image) {
-    return getImagePlaceholderHtml("Pics Unavailable");
+  const imageUrl = getItemImageUrl(item);
+  
+  if (!imageUrl) {
+    return getImagePlaceholderHtml();
   }
 
   return `
     <img
-      src="${item.image}"
-      alt="${item.title}"
-      class="item-card-image"
-      onerror="this.onerror=null; this.parentElement.innerHTML = getImagePlaceholderHtml();"
+      src="${escapeHtmlAttribute(imageUrl)}"
+      alt="${escapeHtmlAttribute(item.title || "Auction item")}"
+      class="item-image"
+      loading="lazy"
+      onerror="
+        this.onerror = null;
+        this.parentElement.innerHTML = getImagePlaceholderHtml();
+      "
     >
   `;
 }
 
+function escapeHtmlAttribute(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+
 function setModalImage(item) {
   const modalImage = document.getElementById("modalItemImage");
+  const imageUrl = getItemImageUrl(item);
 
+  // Clear any previous item's error handler.
   modalImage.onerror = null;
 
-  if (!item.image) {
+if (!imageUrl) {
     modalImage.src = "assets/mcc-logo.svg";
     modalImage.alt = "Image unavailable";
     return;
   }
 
-  modalImage.src = item.image;
-  modalImage.alt = item.title;
+  modalImage.src = imageUrl;
+  modalImage.alt = item.title || "Auction item";
 
   modalImage.onerror = () => {
     modalImage.onerror = null;
